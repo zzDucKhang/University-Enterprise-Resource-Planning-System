@@ -67,4 +67,7 @@ public abstract class BaseDao<T, ID> {
             em.close();
         }
     }
+
+    // Hàm truy vấn nâng cao:
+    // Bạn sẽ cần các hàm như findByProperty(String prop, Object value) để tìm sinh viên theo mã, hoặc tìm lớp theo học kỳ.
 }
