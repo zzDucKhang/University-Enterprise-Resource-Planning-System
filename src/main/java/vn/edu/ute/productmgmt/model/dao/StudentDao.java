@@ -41,4 +41,22 @@ public class StudentDao extends BaseDao<Student, Long> {
                     .getResultList();
         } finally { em.close(); }
     }
+
+    public List<StudentDTO> searchByNameOrCode(String keyword) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            String jpql = "SELECT new vn.edu.ute.productmgmt.model.dto.StudentDTO(...) " +
+                    "FROM Student s WHERE s.fullName LIKE :key OR s.studentCode LIKE :key";
+            return em.createQuery(jpql, StudentDTO.class)
+                    .setParameter("key", "%" + keyword + "%")
+                    .getResultList();
+        } finally { em.close(); }
+    }
+
+    public long countAllStudents() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT COUNT(s) FROM Student s", Long.class).getSingleResult();
+        } finally { em.close(); }
+    }
 }

@@ -1,17 +1,25 @@
 package vn.edu.ute.productmgmt;
+import vn.edu.ute.productmgmt.controller.LoginController;
+import vn.edu.ute.productmgmt.model.util.DatabaseSeeder;
+import vn.edu.ute.productmgmt.view.LoginView;
 
+import javax.swing.SwingUtilities;
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
-
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+        // CHẠY SEED DỮ LIỆU TRƯỚC
+        try {
+            DatabaseSeeder.seed();
+        } catch (Exception e) {
+            System.err.println("Lỗi khi tạo dữ liệu mẫu: " + e.getMessage());
         }
+
+        // KHỞI CHẠY GIAO DIỆN
+        SwingUtilities.invokeLater(() -> {
+            LoginView loginView = new LoginView();
+            new LoginController(loginView);
+            loginView.setVisible(true);
+        });
     }
 }

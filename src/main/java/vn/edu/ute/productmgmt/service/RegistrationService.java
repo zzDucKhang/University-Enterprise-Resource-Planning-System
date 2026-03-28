@@ -17,9 +17,7 @@ public class RegistrationService {
         ClassSection section = classSectionDao.findById(classSectionId);
 
         // 1. Kiểm tra sĩ số lớp
-        long currentEnrollment = (long) classSectionDao.findAllDTO().stream()
-                .filter(d -> d.getId().equals(classSectionId))
-                .findFirst().get().getCurrentEnrollment();
+        long currentEnrollment = classSectionDao.countEnrollmentByClassId(classSectionId);
 
         if (currentEnrollment >= section.getMaxCapacity()) {
             return "Lớp học phần này đã đầy sĩ số!";

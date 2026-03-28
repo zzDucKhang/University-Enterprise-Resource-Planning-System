@@ -1,0 +1,36 @@
+package vn.edu.ute.productmgmt.view;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+
+public class RegistrationPanel extends JPanel {
+    private JTable tableClasses;
+    private DefaultTableModel tableModel;
+    private JButton btnRegister, btnRefresh;
+
+    public RegistrationPanel() {
+        setLayout(new BorderLayout(10, 10));
+
+        JLabel lblHeader = new JLabel("DANH SÁCH LỚP HỌC PHẦN ĐANG MỞ", JLabel.CENTER);
+        lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
+        add(lblHeader, BorderLayout.NORTH);
+
+        String[] cols = {"Mã lớp", "Môn học", "Tín chỉ", "Giảng viên", "Lịch học", "Sĩ số"};
+        tableModel = new DefaultTableModel(cols, 0);
+        tableClasses = new JTable(tableModel);
+        add(new JScrollPane(tableClasses), BorderLayout.CENTER);
+
+        JPanel pnlSouth = new JPanel();
+        btnRegister = new JButton("Đăng ký học phần đã chọn");
+        btnRefresh = new JButton("Tải lại danh sách");
+        pnlSouth.add(btnRegister);
+        pnlSouth.add(btnRefresh);
+        add(pnlSouth, BorderLayout.SOUTH);
+    }
+
+    public JTable getTableClasses() { return tableClasses; }
+    public JButton getBtnRegister() { return btnRegister; }
+    public JButton getBtnRefresh() { return btnRefresh; }
+    public DefaultTableModel getTableModel() { return tableModel; }
+}
