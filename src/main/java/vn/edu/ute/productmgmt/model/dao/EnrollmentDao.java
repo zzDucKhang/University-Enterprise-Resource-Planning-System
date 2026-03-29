@@ -21,4 +21,17 @@ public class EnrollmentDao extends BaseDao<Enrollment, Long> {
                     .getResultList();
         } finally { em.close(); }
     }
+
+    public List<EnrollmentDTO> findByClassSection(Long classSectionId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            String jpql = "SELECT new vn.edu.ute.productmgmt.model.dto.EnrollmentDTO(" +
+                    "e.id, s.studentCode, s.fullName, e.score, e.status) " +
+                    "FROM Enrollment e JOIN e.student s " +
+                    "WHERE e.classSection.id = :cId ORDER BY s.studentCode ASC";
+            return em.createQuery(jpql, EnrollmentDTO.class)
+                    .setParameter("cId", classSectionId)
+                    .getResultList();
+        } finally { em.close(); }
+    }
 }

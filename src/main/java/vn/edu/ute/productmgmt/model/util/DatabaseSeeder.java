@@ -99,7 +99,11 @@ public class DatabaseSeeder {
     private static void seedSemesters(EntityManager em) {
         String[] names = {"HK1 2024-2025", "HK2 2024-2025", "HK1 2025-2026"};
         for (String n : names) {
-            Semester s = new Semester(); s.setSemesterName(n); em.persist(s);
+            Semester s = new Semester(); 
+            s.setSemesterName(n); 
+            s.setRegistrationStartDate(java.time.LocalDate.now().minusDays(10));
+            s.setRegistrationEndDate(java.time.LocalDate.now().plusDays(20));
+            em.persist(s);
         }
     }
 
