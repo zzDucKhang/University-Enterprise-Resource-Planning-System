@@ -11,6 +11,7 @@ public class MainApp extends JFrame {
     private StatisticPanel statisticPanel;
     private LecturerClassPanel lecturerClassPanel;
     private GradePanel gradePanel;
+    private StudentTranscriptPanel studentTranscriptPanel;
     private JMenuItem itemLogout;
 
     public MainApp(UserRole role) {
@@ -52,10 +53,12 @@ public class MainApp extends JFrame {
 
             case STUDENT:
                 registrationPanel = new RegistrationPanel();
-                statisticPanel = new StatisticPanel(); // SV có thể xem thống kê cá nhân
+                studentTranscriptPanel = new StudentTranscriptPanel();
+                statisticPanel = new StatisticPanel(); // SV xem Top GPA toàn trường
 
                 tabbedPane.addTab("Đăng ký Học phần", registrationPanel);
-                tabbedPane.addTab("Kết quả học tập", statisticPanel);
+                tabbedPane.addTab("Kết quả học tập", studentTranscriptPanel);
+                tabbedPane.addTab("Bảng Vàng GPA", statisticPanel);
                 break;
         }
 
@@ -75,6 +78,7 @@ public class MainApp extends JFrame {
     public StatisticPanel getStatisticPanel() { return statisticPanel; }
     public LecturerClassPanel getLecturerClassPanel() { return lecturerClassPanel; }
     public GradePanel getGradePanel() { return gradePanel; }
+    public StudentTranscriptPanel getStudentTranscriptPanel() { return studentTranscriptPanel; }
     public JMenuItem getItemLogout() { return itemLogout; }
     public JTabbedPane getTabbedPane() { return tabbedPane; }
 }

@@ -17,7 +17,7 @@ public class Course {
     private String title;
     private Integer credits;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "prerequisites",
             joinColumns = @JoinColumn(name = "course_id"),
