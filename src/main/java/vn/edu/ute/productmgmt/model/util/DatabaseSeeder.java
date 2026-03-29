@@ -46,7 +46,12 @@ public class DatabaseSeeder {
                 seedClassSections(em);
             }
 
-            // 7. Seed Tài khoản (Kiểm tra từng Role)
+            // 7. Seed Đăng ký (Enrollment) và Điểm số
+            if (getCount(em, Enrollment.class) == 0) {
+                seedEnrollments(em);
+            }
+
+            // 8. Seed Tài khoản (Kiểm tra từng Role)
             seedAccountsIndependently(em);
 
             trans.commit();
@@ -137,6 +142,48 @@ public class DatabaseSeeder {
             cs.setStartPeriod(1); cs.setEndPeriod(4);
             cs.setMaxCapacity(50);
             em.persist(cs);
+        }
+    }
+
+    private static void seedEnrollments(EntityManager em) {
+        List<Student> students = em.createQuery("FROM Student", Student.class).getResultList();
+        List<ClassSection> classSections = em.createQuery("FROM ClassSection", ClassSection.class).getResultList();
+        
+        if (students.isEmpty() || classSections.isEmpty()) return;
+
+        // Sinh viên 1, 2, 3 tự động đăng ký các lớp 1, 2
+        double[] mockScores = {9.5, 7.0, 4.5, 8.5, 6.0, 10.0};
+        int scoreIndex = 0;
+        
+        for (int i = 0; i < Math.min(3, students.size()); i++) {
+            for (int j = 0; j < Math.min(2, classSections.size()); j++) {
+                Enrollment e = new Enrollment();
+                e.setStudent(students.get(i));
+                e.setClassSection(classSections.get(j));
+                
+                // Gán điểm mẫu
+                double score = mockScores[scoreIndex % mockScores.length];
+                e.setScore(score);
+                if (score >= 5.0) {
+                    e.setStatus(EnrollmentStatus.PASSED);
+                } else {
+                    e.setStatus(EnrollmentStatus.FAILED);
+                }
+                
+                em.persist(e);
+                scoreIndex++;
+            }
+        }
+
+        // Đoạn này: Thiết lập Sinh viên thứ 4 đã đăng ký lớp học thành công nhưng chưa có điểm để test màn hình Nhập Điểm (GradePanel)
+        if (students.size() >= 4) {
+            for (int j = 0; j < Math.min(2, classSections.size()); j++) {
+                Enrollment eBlank = new Enrollment();
+                eBlank.setStudent(students.get(3));
+                eBlank.setClassSection(classSections.get(j));
+                eBlank.setStatus(EnrollmentStatus.REGISTERED);
+                em.persist(eBlank);
+            }
         }
     }
 

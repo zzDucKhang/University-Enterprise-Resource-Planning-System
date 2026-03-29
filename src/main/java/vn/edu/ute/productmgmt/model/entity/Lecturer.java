@@ -15,6 +15,7 @@ public class Lecturer {
     @Column(name = "lecturer_code", unique = true, nullable = false)
     private String lecturerCode;
 
+    @Column(name = "full_name")
     private String fullName;
     private String degree;
 
