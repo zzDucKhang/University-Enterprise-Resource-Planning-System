@@ -12,6 +12,7 @@ public class Semester {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "semester_name")
     private String semesterName;
 
     @Enumerated(EnumType.STRING)

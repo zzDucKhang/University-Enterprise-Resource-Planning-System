@@ -10,10 +10,20 @@ public class AccountDao extends BaseDao<Account, Long> {
     public Account findByUsername(String username) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT a FROM Account a WHERE a.username = :user", Account.class)
+            // Sử dụng JOIN FETCH để lấy luôn thông tin Student và Lecturer đi kèm
+            String jpql = "SELECT a FROM Account a " +
+                    "LEFT JOIN FETCH a.student " +
+                    "LEFT JOIN FETCH a.lecturer " +
+                    "WHERE a.username = :user";
+
+            return em.createQuery(jpql, Account.class)
                     .setParameter("user", username)
                     .getSingleResult();
-        } catch (Exception e) { return null; }
-        finally { em.close(); }
+        } catch (Exception e) {
+            // Nếu không tìm thấy hoặc lỗi, trả về null
+            return null;
+        } finally {
+            em.close();
+        }
     }
 }

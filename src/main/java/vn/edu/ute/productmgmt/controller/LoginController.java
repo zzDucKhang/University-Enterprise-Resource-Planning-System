@@ -29,25 +29,28 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        String user = view.getTxtUsername().getText();
-        String pass = new String(view.getTxtPassword().getPassword());
+        String username = view.getTxtUsername().getText();
+        String password = new String(view.getTxtPassword().getPassword());
 
-        if (user.isEmpty() || pass.isEmpty()) {
-            MessageUtil.showError(view, "Vui lòng nhập đầy đủ thông tin!");
-            return;
-        }
+        String result = accountService.login(username, password);
 
-        String result = accountService.login(user, pass);
         if (result.equals("SUCCESS")) {
-            MessageUtil.showInfo(view, "Đăng nhập thành công!");
-            view.dispose(); // Đóng màn hình Login
+            // 1. Lấy thông tin tài khoản vừa đăng nhập thành công từ Session
+            vn.edu.ute.productmgmt.model.dto.AccountDTO currentAcc =
+                    vn.edu.ute.productmgmt.model.util.SessionManager.getCurrentAccount();
 
-            // Khởi chạy giao diện chính và Controller chính
-            MainApp mainApp = new MainApp();
-            new MainController(mainApp);
+            // 2. TRUYỀN ROLE VÀO ĐÂY (Sửa lỗi Build Failed)
+            vn.edu.ute.productmgmt.view.MainApp mainApp = new vn.edu.ute.productmgmt.view.MainApp(currentAcc.getRole());
+
+            // 3. Khởi tạo Controller chính
+            new vn.edu.ute.productmgmt.controller.MainController(mainApp);
+
+            // 4. Hiển thị màn hình chính và đóng màn hình Login
             mainApp.setVisible(true);
+            view.dispose();
+
         } else {
-            MessageUtil.showError(view, result);
+            vn.edu.ute.productmgmt.model.util.MessageUtil.showError(view, result);
         }
     }
 }

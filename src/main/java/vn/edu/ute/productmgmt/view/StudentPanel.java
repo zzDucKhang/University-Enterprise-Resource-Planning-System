@@ -8,9 +8,11 @@ import java.awt.*;
 public class StudentPanel extends JPanel {
     private JTextField txtCode, txtName, txtEmail, txtSearch;
     private JComboBox<String> cbGender;
+    private JComboBox<String> cbMajor;
     private JButton btnAdd, btnUpdate, btnDelete, btnClear, btnSearch;
     private JTable table;
     private DefaultTableModel tableModel;
+
 
     public StudentPanel() {
         setLayout(new BorderLayout(10, 10));
@@ -35,6 +37,12 @@ public class StudentPanel extends JPanel {
 
         g.gridx = 2; pnlInput.add(new JLabel("Giới tính:"), g);
         g.gridx = 3; cbGender = new JComboBox<>(new String[]{"MALE", "FEMALE", "OTHER"}); pnlInput.add(cbGender, g);
+
+        g.gridx = 0; g.gridy = 2; pnlInput.add(new JLabel("Ngành học:"), g);
+        g.gridx = 1; g.gridwidth = 3; // Cho ô chọn Ngành dài ra
+        cbMajor = new JComboBox<>();
+        pnlInput.add(cbMajor, g);
+        g.gridwidth = 1; // Reset lại gridwidth
 
         // --- PHẦN GIỮA: NÚT & TÌM KIẾM ---
         JPanel pnlActions = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -75,4 +83,5 @@ public class StudentPanel extends JPanel {
     public JButton getBtnSearch() { return btnSearch; }
     public JTable getTable() { return table; }
     public DefaultTableModel getTableModel() { return tableModel; }
+    public JComboBox<String> getCbMajor() { return cbMajor; }
 }

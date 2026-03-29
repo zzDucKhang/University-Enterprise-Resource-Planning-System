@@ -25,6 +25,8 @@ public class StudentDao extends BaseDao<Student, Long> {
     public List<StudentDTO> findAllDTO() {
         EntityManager em = JpaUtil.getEntityManager();
         try {
+            // Xóa cache để lấy dữ liệu mới nhất từ MySQL
+            em.clear();
             String jpql = "SELECT new vn.edu.ute.productmgmt.model.dto.StudentDTO(" +
                     "s.id, s.studentCode, s.fullName, s.dob, s.email, s.gender, " +
                     "m.name, f.name, " +

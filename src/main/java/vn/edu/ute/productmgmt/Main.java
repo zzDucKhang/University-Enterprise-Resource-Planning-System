@@ -8,13 +8,8 @@ import javax.swing.SwingUtilities;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        // CHẠY SEED DỮ LIỆU TRƯỚC
-        try {
-            DatabaseSeeder.seed();
-        } catch (Exception e) {
-            System.err.println("Lỗi khi tạo dữ liệu mẫu: " + e.getMessage());
-        }
 
+        DatabaseSeeder.seed();
         // KHỞI CHẠY GIAO DIỆN
         SwingUtilities.invokeLater(() -> {
             LoginView loginView = new LoginView();

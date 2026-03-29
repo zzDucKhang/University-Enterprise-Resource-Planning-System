@@ -8,53 +8,46 @@ import java.util.List;
 public class ClassSectionService {
     private final ClassSectionDao classSectionDao = new ClassSectionDao();
 
-    /**
-     * Lấy toàn bộ danh sách lớp học phần dưới dạng DTO để hiển thị lên JTable
-     */
     public List<ClassSectionDTO> getAllClassSectionDTOs() {
         return classSectionDao.findAllDTO();
     }
 
-    /**
-     * Lấy danh sách lớp theo từng học kỳ (Phục vụ màn hình Đăng ký học phần)
-     */
     public List<ClassSectionDTO> getDTOsBySemester(Long semesterId) {
         if (semesterId == null) return getAllClassSectionDTOs();
         return classSectionDao.findDTOBySemester(semesterId);
     }
 
     /**
-     * Lưu hoặc cập nhật một lớp học phần
+     * Phục vụ Tab "Lịch dạy của tôi" cho Giảng viên
      */
+    public List<ClassSectionDTO> getClassesByLecturer(Long lecturerId) {
+        if (lecturerId == null) return java.util.Collections.emptyList();
+        return classSectionDao.findByLecturerId(lecturerId);
+    }
+
     public String saveClassSection(ClassSection section) {
-        // Validation cơ bản
-        if (section.getMaxCapacity() <= 0) {
+        if (section.getMaxCapacity() == null || section.getMaxCapacity() <= 0) {
             return "Sĩ số tối đa phải lớn hơn 0!";
         }
-        if (section.getStartPeriod() >= section.getEndPeriod()) {
-            return "Tiết bắt đầu phải nhỏ hơn tiết kết thúc!";
+        if (section.getStartPeriod() == null || section.getEndPeriod() == null ||
+                section.getStartPeriod() >= section.getEndPeriod()) {
+            return "Tiết học không hợp lệ (Tiết bắt đầu < Tiết kết thúc)!";
         }
 
         try {
             classSectionDao.save(section);
             return "SUCCESS";
         } catch (Exception e) {
-            return "Lỗi khi lưu lớp học phần: " + e.getMessage();
+            return "Lỗi khi lưu lớp: " + e.getMessage();
         }
     }
 
-    /**
-     * Xóa lớp học phần theo ID
-     */
     public void deleteClassSection(Long id) {
         classSectionDao.deleteById(id);
     }
 
-    /**
-     * Đếm tổng số lớp học phần đang có (Dùng cho StatisticController)
-     */
     public long countTotal() {
-        // Tận dụng hàm findAll().size() hoặc viết một câu COUNT trong DAO
-        return classSectionDao.findAll().size();
+        // Đã tối ưu gọi lệnh COUNT trực tiếp trong DB
+        return classSectionDao.countTotalClasses();
     }
 }

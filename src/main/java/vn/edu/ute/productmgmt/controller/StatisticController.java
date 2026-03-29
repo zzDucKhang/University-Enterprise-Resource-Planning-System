@@ -13,20 +13,12 @@ public class StatisticController {
         this.view = view;
         this.studentService = new StudentService();
         this.classService = new ClassSectionService();
-
         refreshStats();
     }
 
-    private void refreshStats() {
-        // Lấy tổng số SV từ JPQL COUNT
-        long totalStudents = studentService.countTotal();
-        view.getLblTotalStudents().setText("Tổng số: " + totalStudents);
-
-        // Lấy tổng số lớp đang mở
-        long totalClasses = classService.countTotal();
-        view.getLblTotalGroups().setText("Đang mở: " + totalClasses);
-
-        // Đổ dữ liệu Top 10 GPA vào bảng
-        // fillTopStudentTable();
+    // Đổi thành PUBLIC để MainController gọi được
+    public void refreshStats() {
+        view.getLblTotalStudents().setText("Tổng số: " + studentService.countTotal());
+        view.getLblTotalGroups().setText("Đang mở: " + classService.countTotal());
     }
 }
