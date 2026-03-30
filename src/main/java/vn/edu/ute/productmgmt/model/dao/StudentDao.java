@@ -57,7 +57,11 @@ public class StudentDao extends BaseDao<Student, Long> {
                     "LEFT JOIN s.enrollments en ON en.status = :status " +
                     "LEFT JOIN en.classSection cs " +
                     "LEFT JOIN cs.course c " +
+<<<<<<< HEAD
                     "WHERE (s.fullName LIKE :key OR s.studentCode LIKE :key) " +
+=======
+                    "WHERE s.fullName LIKE :key OR s.studentCode LIKE :key " +
+>>>>>>> e42212cd2ac4d13cca7404df0da395bf07b0f515
                     "GROUP BY s.id, s.studentCode, s.fullName, s.dob, s.email, s.gender, m.name, f.name";
             return em.createQuery(jpql, StudentDTO.class)
                     .setParameter("status", EnrollmentStatus.PASSED)

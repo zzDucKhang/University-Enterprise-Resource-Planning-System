@@ -39,6 +39,14 @@ public class StudentService {
         return studentDao.countAllStudents();
     }
 
+    public List<StudentDTO> getTop10StudentsByGPA() {
+        return getAllStudentDTOs().stream()
+                .filter(s -> s.getGpa() != null && s.getGpa() > 0)
+                .sorted((s1, s2) -> Double.compare(s2.getGpa(), s1.getGpa()))
+                .limit(10)
+                .toList();
+    }
+
     public String saveStudent(Student student) {
         // 1. Validation logic
         if (!ValidationUtil.isValidStudentCode(student.getStudentCode())) {

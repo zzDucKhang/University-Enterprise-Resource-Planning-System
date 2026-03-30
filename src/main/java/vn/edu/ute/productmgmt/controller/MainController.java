@@ -11,6 +11,8 @@ public class MainController {
     private RegistrationController registrationController;
     private StatisticController statisticController;
     private LecturerClassController lecturerClassController;
+    private GradeController gradeController;
+    private StudentTranscriptController studentTranscriptController;
 
     public MainController(MainApp mainApp) {
         this.mainApp = mainApp;
@@ -28,6 +30,12 @@ public class MainController {
         if (mainApp.getLecturerClassPanel() != null) {
             this.lecturerClassController = new LecturerClassController(mainApp.getLecturerClassPanel());
         }
+        if (mainApp.getGradePanel() != null) {
+            this.gradeController = new GradeController(mainApp.getGradePanel());
+        }
+        if (mainApp.getStudentTranscriptPanel() != null) {
+            this.studentTranscriptController = new StudentTranscriptController(mainApp.getStudentTranscriptPanel());
+        }
 
         initMenuEvents();
         initTabEvents();
@@ -38,6 +46,8 @@ public class MainController {
         if (registrationController != null) registrationController.loadAvailableClasses();
         if (statisticController != null) statisticController.refreshStats();
         if (lecturerClassController != null) lecturerClassController.loadLecturerClasses();
+        if (gradeController != null) gradeController.loadClasses();
+        if (studentTranscriptController != null) studentTranscriptController.loadStudentTranscript();
         System.out.println(">>> Dữ liệu toàn hệ thống đã được đồng bộ.");
     }
 

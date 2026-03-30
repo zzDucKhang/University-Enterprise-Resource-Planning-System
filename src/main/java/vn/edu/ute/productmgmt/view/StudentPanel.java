@@ -27,7 +27,7 @@ public class StudentPanel extends JPanel {
         g.insets = new Insets(5, 5, 5, 5); g.fill = GridBagConstraints.HORIZONTAL;
 
         g.gridx = 0; g.gridy = 0; pnlInput.add(new JLabel("MSSV:"), g);
-        g.gridx = 1; txtCode = new JTextField(15); pnlInput.add(txtCode, g);
+        g.gridx = 1; txtCode = new PlaceholderTextField(15, "Nhập mã sinh viên..."); pnlInput.add(txtCode, g);
 
         g.gridx = 2; pnlInput.add(new JLabel("Họ tên:"), g);
         g.gridx = 3; txtName = new JTextField(20); pnlInput.add(txtName, g);
@@ -51,7 +51,7 @@ public class StudentPanel extends JPanel {
         btnDelete = new JButton("Xóa");
         btnClear = new JButton("Làm mới");
 
-        txtSearch = new JTextField(20);
+        txtSearch = new PlaceholderTextField(20, "Nhập MSSV hoặc tên sinh viên để tìm...");
         btnSearch = new JButton("Tìm kiếm");
 
         pnlActions.add(btnAdd); pnlActions.add(btnUpdate); pnlActions.add(btnDelete); pnlActions.add(btnClear);
@@ -84,4 +84,28 @@ public class StudentPanel extends JPanel {
     public JTable getTable() { return table; }
     public DefaultTableModel getTableModel() { return tableModel; }
     public JComboBox<String> getCbMajor() { return cbMajor; }
+
+    // Custom class tạo chữ mờ (Placeholder) an toàn
+    class PlaceholderTextField extends JTextField {
+        private String placeholder;
+        
+        public PlaceholderTextField(int columns, String placeholder) {
+            super(columns);
+            this.placeholder = placeholder;
+        }
+        
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (getText().isEmpty() && !isFocusOwner()) {
+                Graphics2D g2 = (Graphics2D) g.create();
+                g2.setColor(Color.GRAY);
+                g2.setFont(getFont().deriveFont(Font.ITALIC));
+                int x = getInsets().left;
+                int y = (getHeight() - g.getFontMetrics().getHeight()) / 2 + g.getFontMetrics().getAscent();
+                g2.drawString(placeholder, x, y);
+                g2.dispose();
+            }
+        }
+    }
 }

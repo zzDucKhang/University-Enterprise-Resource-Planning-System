@@ -15,7 +15,6 @@ public class Lecturer {
     @Column(name = "lecturer_code", unique = true, nullable = false)
     private String lecturerCode;
 
-    @Column(name = "full_name", nullable = false)
     private String fullName;
 
     @Column(name = "degree")

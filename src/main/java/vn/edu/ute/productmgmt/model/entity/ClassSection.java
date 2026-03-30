@@ -12,6 +12,10 @@ public class ClassSection {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     @Column(name = "class_code", unique = true, nullable = false)
     private String classCode;
 
@@ -55,6 +59,9 @@ public class ClassSection {
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
+
+    public Long getVersion() { return version; }
+    public void setVersion(Long version) { this.version = version; }
 
     public String getClassCode() { return classCode; }
     public void setClassCode(String classCode) { this.classCode = classCode; }

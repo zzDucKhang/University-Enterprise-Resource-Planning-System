@@ -4,6 +4,10 @@ target/
 !**/src/test/**/target/
 .kotlin
 docs/
+<<<<<<< HEAD
+=======
+
+>>>>>>> e42212cd2ac4d13cca7404df0da395bf07b0f515
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

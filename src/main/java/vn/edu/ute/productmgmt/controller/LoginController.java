@@ -29,7 +29,7 @@ public class LoginController {
     }
 
     private void handleLogin() {
-        String username = view.getTxtUsername().getText();
+        String username = view.getTxtUsername().getText().trim();
         String password = new String(view.getTxtPassword().getPassword());
 
         String result = accountService.login(username, password);

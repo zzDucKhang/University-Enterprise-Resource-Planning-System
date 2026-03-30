@@ -9,12 +9,25 @@ public class EnrollmentDTO {
     private Double score;
     private EnrollmentStatus status;
 
+    // Fields dùng cho màn hình Chấm Điểm
+    private Long id;
+    private String studentCode;
+    private String studentName;
+
     public EnrollmentDTO() {}
 
     public EnrollmentDTO(String courseCode, String courseName, Integer credits, Double score, EnrollmentStatus status) {
         this.courseCode = courseCode;
         this.courseName = courseName;
         this.credits = credits;
+        this.score = score;
+        this.status = status;
+    }
+
+    public EnrollmentDTO(Long id, String studentCode, String studentName, Double score, EnrollmentStatus status) {
+        this.id = id;
+        this.studentCode = studentCode;
+        this.studentName = studentName;
         this.score = score;
         this.status = status;
     }
@@ -33,4 +46,13 @@ public class EnrollmentDTO {
 
     public EnrollmentStatus getStatus() { return status; }
     public void setStatus(EnrollmentStatus status) { this.status = status; }
+
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getStudentCode() { return studentCode; }
+    public void setStudentCode(String studentCode) { this.studentCode = studentCode; }
+
+    public String getStudentName() { return studentName; }
+    public void setStudentName(String studentName) { this.studentName = studentName; }
 }

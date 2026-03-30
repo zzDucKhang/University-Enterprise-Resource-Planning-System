@@ -19,8 +19,12 @@ public class AccountDao extends BaseDao<Account, Long> {
             return em.createQuery(jpql, Account.class)
                     .setParameter("user", username)
                     .getSingleResult();
+        } catch (jakarta.persistence.NoResultException e) {
+            System.out.println(">>> LOGIN FAILED: NoResultException - Không tìm thấy user: " + username);
+            return null;
         } catch (Exception e) {
-            // Nếu không tìm thấy hoặc lỗi, trả về null
+            System.out.println(">>> LOGIN FAILED: Lỗi truy vấn Database!");
+            e.printStackTrace();
             return null;
         } finally {
             em.close();

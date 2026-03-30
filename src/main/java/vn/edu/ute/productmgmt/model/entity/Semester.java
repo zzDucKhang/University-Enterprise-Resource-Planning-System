@@ -18,6 +18,12 @@ public class Semester {
     @Enumerated(EnumType.STRING)
     private SemesterStatus status;
 
+    @Column(name = "registration_start_date")
+    private java.time.LocalDate registrationStartDate;
+
+    @Column(name = "registration_end_date")
+    private java.time.LocalDate registrationEndDate;
+
     @OneToMany(mappedBy = "semester")
     private List<ClassSection> classSections = new ArrayList<>();
 
@@ -34,6 +40,10 @@ public class Semester {
     public void setSemesterName(String semesterName) { this.semesterName = semesterName; }
     public SemesterStatus getStatus() { return status; }
     public void setStatus(SemesterStatus status) { this.status = status; }
+    public java.time.LocalDate getRegistrationStartDate() { return registrationStartDate; }
+    public void setRegistrationStartDate(java.time.LocalDate registrationStartDate) { this.registrationStartDate = registrationStartDate; }
+    public java.time.LocalDate getRegistrationEndDate() { return registrationEndDate; }
+    public void setRegistrationEndDate(java.time.LocalDate registrationEndDate) { this.registrationEndDate = registrationEndDate; }
     public List<ClassSection> getClassSections() { return classSections; }
     public void setClassSections(List<ClassSection> classSections) { this.classSections = classSections; }
 }

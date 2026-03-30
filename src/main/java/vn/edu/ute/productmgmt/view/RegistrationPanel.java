@@ -17,6 +17,7 @@ public class RegistrationPanel extends JPanel {
         add(lblHeader, BorderLayout.NORTH);
 
         String[] cols = {"ID", "Mã lớp", "Môn học", "Tín chỉ", "Giảng viên", "Lịch học", "Sĩ số"};
+<<<<<<< HEAD
         tableModel = new DefaultTableModel(cols, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -27,6 +28,15 @@ public class RegistrationPanel extends JPanel {
         tableClasses.getColumnModel().getColumn(0).setMinWidth(0);
         tableClasses.getColumnModel().getColumn(0).setMaxWidth(0);
         tableClasses.getColumnModel().getColumn(0).setPreferredWidth(0);
+=======
+        tableModel = new DefaultTableModel(cols, 0);
+        tableClasses = new JTable(tableModel);
+
+        // Ẩn cột ID
+        tableClasses.getColumnModel().getColumn(0).setMinWidth(0);
+        tableClasses.getColumnModel().getColumn(0).setMaxWidth(0);
+
+>>>>>>> e42212cd2ac4d13cca7404df0da395bf07b0f515
         add(new JScrollPane(tableClasses), BorderLayout.CENTER);
 
         JPanel pnlSouth = new JPanel();
