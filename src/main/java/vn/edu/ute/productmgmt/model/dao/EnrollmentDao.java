@@ -6,9 +6,11 @@ import vn.edu.ute.productmgmt.model.entity.Enrollment;
 import vn.edu.ute.productmgmt.model.util.JpaUtil;
 import java.util.List;
 
+// Điểm
 public class EnrollmentDao extends BaseDao<Enrollment, Long> {
     public EnrollmentDao() { super(Enrollment.class); }
 
+    // Xuất bảng điểm của mỗi môn học cho sinh viên
     public List<EnrollmentDTO> findTranscriptByStudent(Long studentId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -22,6 +24,7 @@ public class EnrollmentDao extends BaseDao<Enrollment, Long> {
         } finally { em.close(); }
     }
 
+    // Xuất "Danh sách sinh viên" (Bảng chấm điểm) cho Giảng viên.
     public List<EnrollmentDTO> findByClassSection(Long classSectionId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {

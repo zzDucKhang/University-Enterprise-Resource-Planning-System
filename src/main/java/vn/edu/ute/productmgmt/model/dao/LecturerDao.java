@@ -6,11 +6,13 @@ import vn.edu.ute.productmgmt.model.entity.Lecturer;
 import vn.edu.ute.productmgmt.model.util.JpaUtil;
 import java.util.List;
 
+//Giảng viên
 public class LecturerDao extends BaseDao<Lecturer, Long> {
     public LecturerDao() {
         super(Lecturer.class);
     }
 
+    // Lấy tất cả giảng viên
     public List<LecturerDTO> findAllDTO() {
         EntityManager em = JpaUtil.getEntityManager();
         try {

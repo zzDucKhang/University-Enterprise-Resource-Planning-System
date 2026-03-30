@@ -6,6 +6,7 @@ import vn.edu.ute.productmgmt.model.entity.ClassSection;
 import vn.edu.ute.productmgmt.model.util.JpaUtil;
 import java.util.List;
 
+// Lớp học
 public class ClassSectionDao extends BaseDao<ClassSection, Long> {
     public ClassSectionDao() { super(ClassSection.class); }
 
@@ -19,12 +20,14 @@ public class ClassSectionDao extends BaseDao<ClassSection, Long> {
             "JOIN cs.lecturer l " +
             "JOIN cs.semester sem ";
 
+    // Lấy tất cả lớp học phần
     public List<ClassSectionDTO> findAllDTO() {
         EntityManager em = JpaUtil.getEntityManager();
         try { return em.createQuery(DTO_SELECT, ClassSectionDTO.class).getResultList(); }
         finally { em.close(); }
     }
 
+    // Lấy tất cả lớp học phần của 1 học kỳ
     public List<ClassSectionDTO> findDTOBySemester(Long semesterId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -34,6 +37,7 @@ public class ClassSectionDao extends BaseDao<ClassSection, Long> {
         } finally { em.close(); }
     }
 
+    // Lấy tất cả lớp học phần của 1 giảng viên
     public List<ClassSectionDTO> findByLecturerId(Long lecturerId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -43,9 +47,7 @@ public class ClassSectionDao extends BaseDao<ClassSection, Long> {
         } finally { em.close(); }
     }
 
-    /**
-     * Hàm quan trọng để Service kiểm tra sĩ số lớp
-     */
+    // Lấy chỉ số lớp hiện tại
     public long countEnrollmentByClassId(Long classSectionId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -55,6 +57,7 @@ public class ClassSectionDao extends BaseDao<ClassSection, Long> {
         } finally { em.close(); }
     }
 
+    // Đếm tổng số lớp đang mở
     public long countTotalClasses() {
         EntityManager em = JpaUtil.getEntityManager();
         try { return em.createQuery("SELECT COUNT(cs) FROM ClassSection cs", Long.class).getSingleResult(); }

@@ -10,7 +10,7 @@ import java.util.List;
 public class StudentDao extends BaseDao<Student, Long> {
     public StudentDao() { super(Student.class); }
 
-    // Tìm theo MSSV (Giống findUnique của Prisma)
+    // Tìm theo MSSV
     public Student findByStudentCode(String code) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -44,6 +44,7 @@ public class StudentDao extends BaseDao<Student, Long> {
         } finally { em.close(); }
     }
 
+    // Tìm kiếm sinh viên bằng name hoặc mã sinh viên
     public List<StudentDTO> searchByNameOrCode(String keyword) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
@@ -66,6 +67,7 @@ public class StudentDao extends BaseDao<Student, Long> {
         } finally { em.close(); }
     }
 
+    // đếm tổng số sinh viên
     public long countAllStudents() {
         EntityManager em = JpaUtil.getEntityManager();
         try {

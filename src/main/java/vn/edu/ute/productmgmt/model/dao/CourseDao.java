@@ -5,14 +5,14 @@ import vn.edu.ute.productmgmt.model.entity.Course;
 import vn.edu.ute.productmgmt.model.util.JpaUtil;
 import java.util.List;
 
+// Học phần
 public class CourseDao extends BaseDao<Course, Long> {
     public CourseDao() { super(Course.class); }
 
-    // HÀM CÒN THIẾU ĐỂ FIX LỖI TRONG COURSE SERVICE
+    // Lấy toàn bộ danh sách các môn học, và "gom" luôn cả danh sách các môn tiên quyết (Prerequisites) của từng môn đó
     public List<Course> findAllWithPrerequisites() {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            // Sử dụng FETCH JOIN để lấy luôn danh sách prerequisites trong 1 câu query
             return em.createQuery("SELECT DISTINCT c FROM Course c LEFT JOIN FETCH c.prerequisites", Course.class)
                     .getResultList();
         } finally {
@@ -20,6 +20,7 @@ public class CourseDao extends BaseDao<Course, Long> {
         }
     }
 
+    // Tìm kiếm môn học bằng mã môn
     public Course findByCourseCode(String code) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
