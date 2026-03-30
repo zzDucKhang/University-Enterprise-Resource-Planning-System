@@ -7,10 +7,10 @@ import vn.edu.ute.productmgmt.model.util.JpaUtil;
 public class AccountDao extends BaseDao<Account, Long> {
     public AccountDao() { super(Account.class); }
 
+    // Tìm tài khoản, lấy luôn thông tin Student và Lecturer đi kèm
     public Account findByUsername(String username) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            // Sử dụng JOIN FETCH để lấy luôn thông tin Student và Lecturer đi kèm
             String jpql = "SELECT a FROM Account a " +
                     "LEFT JOIN FETCH a.student " +
                     "LEFT JOIN FETCH a.lecturer " +

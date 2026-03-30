@@ -34,6 +34,9 @@ public class ClassSection {
     @Column(name = "max_capacity")
     private Integer maxCapacity;
 
+    @Column(name = "current_enrollment", columnDefinition = "INT DEFAULT 0")
+    private Integer currentEnrollment = 0;
+
     // QUAN HỆ: Nhiều lớp thuộc về một Môn học
     @ManyToOne
     @JoinColumn(name = "course_id")
@@ -92,4 +95,11 @@ public class ClassSection {
 
     public List<Enrollment> getEnrollments() { return enrollments; }
     public void setEnrollments(List<Enrollment> enrollments) { this.enrollments = enrollments; }
+
+    public Integer getCurrentEnrollment() {
+        return currentEnrollment;
+    }
+    public void setCurrentEnrollment(Integer currentEnrollment) {
+        this.currentEnrollment = currentEnrollment;
+    }
 }

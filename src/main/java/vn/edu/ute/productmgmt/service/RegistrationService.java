@@ -1,30 +1,38 @@
 package vn.edu.ute.productmgmt.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.OptimisticLockException;
 import vn.edu.ute.productmgmt.model.dao.ClassSectionDao;
 import vn.edu.ute.productmgmt.model.dao.EnrollmentDao;
+import vn.edu.ute.productmgmt.model.dto.EnrollmentDTO;
 import vn.edu.ute.productmgmt.model.entity.ClassSection;
 import vn.edu.ute.productmgmt.model.entity.Course;
 import vn.edu.ute.productmgmt.model.entity.Enrollment;
 import vn.edu.ute.productmgmt.model.entity.Student;
 import vn.edu.ute.productmgmt.model.enums.EnrollmentStatus;
+import vn.edu.ute.productmgmt.model.util.JpaUtil;
+
 import java.time.LocalDate;
 import java.util.List;
+
 public class RegistrationService {
     private final EnrollmentDao enrollmentDao = new EnrollmentDao();
     private final ClassSectionDao classSectionDao = new ClassSectionDao();
 
     // Đăng ký học phần cho student
     public String registerCourse(Student student, Long classSectionId) {
+
+        // --- PHẦN 1: KIỂM TRA ĐIỀU KIỆN (READ-ONLY) ---
         ClassSection section = classSectionDao.findById(classSectionId);
+        if (section == null) return "Không tìm thấy lớp học phần này!";
 
-        // 1. Kiểm tra sĩ số lớp
-        long currentEnrollment = classSectionDao.countEnrollmentByClassId(classSectionId);
-
-        if (currentEnrollment >= section.getMaxCapacity()) {
+        // 1. Kiểm tra sĩ số nhanh
+        int currentCount = (section.getCurrentEnrollment() != null) ? section.getCurrentEnrollment() : 0;
+        if (currentCount >= section.getMaxCapacity()) {
             return "Lớp học phần này đã đầy sĩ số!";
         }
 
-        // 2. Kiểm tra thời gian mở đăng ký tín chỉ
+        // 2. Kiểm tra thời gian
         if (section.getSemester().getRegistrationStartDate() != null && section.getSemester().getRegistrationEndDate() != null) {
             LocalDate today = LocalDate.now();
             if (today.isBefore(section.getSemester().getRegistrationStartDate()) || today.isAfter(section.getSemester().getRegistrationEndDate())) {
@@ -32,64 +40,88 @@ public class RegistrationService {
             }
         }
 
-        // Lấy danh sách học phần đăng ký hiện tại của sinh viên trong HỌC KỲ NÀY
-        List<Enrollment> registrations = enrollmentDao.findAll().stream()
+        List<Enrollment> currentSemesterRegistrations = enrollmentDao.findAll().stream()
                 .filter(e -> e.getStudent().getId().equals(student.getId())
                         && e.getClassSection().getSemester().getId().equals(section.getSemester().getId()))
                 .toList();
 
-        // 3.Đăng ký trùng môn học (cùng môn khác lớp)
-        boolean duplicateCourse = registrations.stream().anyMatch(e -> e.getClassSection().getCourse().getId().equals(section.getCourse().getId()));
-        if (duplicateCourse) {
-            return "Bạn đã đăng ký một lớp khác của môn học này trong học kỳ hiện tại!";
-        }
+        List<EnrollmentDTO> studentTranscript = enrollmentDao.findTranscriptByStudent(student.getId());
 
-        // 4.  Môn học đã học và Passed chưa?
-        boolean alreadyPassed = enrollmentDao.findTranscriptByStudent(student.getId()).stream()
+        // 3. Trùng môn
+        boolean duplicateCourse = currentSemesterRegistrations.stream()
+                .anyMatch(e -> e.getClassSection().getCourse().getId().equals(section.getCourse().getId()));
+        if (duplicateCourse) return "Bạn đã đăng ký một lớp khác của môn học này trong học kỳ hiện tại!";
+
+        // 4. Đã qua môn
+        boolean alreadyPassed = studentTranscript.stream()
                 .anyMatch(e -> e.getCourseCode().equals(section.getCourse().getCourseCode())
                         && e.getStatus() == EnrollmentStatus.PASSED);
-        if (alreadyPassed) {
-            return "Bạn đã hoàn thành qua môn học này, không được đăng ký học lại!";
-        }
+        if (alreadyPassed) return "Bạn đã hoàn thành qua môn học này, không được đăng ký học lại!";
 
-        // 5. Kiểm tra môn tiên quyết
+        // 5. Môn tiên quyết
         for (Course prerequisite : section.getCourse().getPrerequisites()) {
-            boolean passed = enrollmentDao.findTranscriptByStudent(student.getId()).stream()
+            boolean passed = studentTranscript.stream()
                     .anyMatch(e -> e.getCourseCode().equals(prerequisite.getCourseCode())
                             && e.getStatus() == EnrollmentStatus.PASSED);
-            if (!passed) {
-                return "Bạn chưa hoàn thành môn tiên quyết: " + prerequisite.getTitle();
-            }
+            if (!passed) return "Bạn chưa hoàn thành môn tiên quyết: " + prerequisite.getTitle();
         }
 
-        // 6. Kiểm tra giới hạn Tín chỉ (MAX: 24)
-        int currentCredits = registrations.stream().mapToInt(e -> e.getClassSection().getCourse().getCredits()).sum();
+        // 6. Giới hạn tín chỉ
+        int currentCredits = currentSemesterRegistrations.stream()
+                .mapToInt(e -> e.getClassSection().getCourse().getCredits()).sum();
         if (currentCredits + section.getCourse().getCredits() > 24) {
             return "Vượt quá giới hạn tín chỉ đăng ký cho phép của học kỳ (Tối đa 24 tín chỉ)!";
         }
 
-        // 7. Kiểm tra trùng lịch học
-        for (Enrollment reg : registrations) {
+        // 7. Trùng lịch
+        for (Enrollment reg : currentSemesterRegistrations) {
             ClassSection s = reg.getClassSection();
             if (s.getDayOfWeek() == section.getDayOfWeek()) {
-                // Công thức kiểm tra giao thoa khoảng tiết học
                 if (Math.max(s.getStartPeriod(), section.getStartPeriod()) <= Math.min(s.getEndPeriod(), section.getEndPeriod())) {
                     return "Bị trùng lịch học với môn: " + s.getCourse().getTitle();
                 }
             }
         }
 
-        // 4. Nếu vượt qua tất cả, tiến hành lưu
-        Enrollment newEnrollment = new Enrollment();
-        newEnrollment.setStudent(student);
-        newEnrollment.setClassSection(section);
-        newEnrollment.setStatus(EnrollmentStatus.REGISTERED);
-
+        // --- PHẦN 2: LƯU DỮ LIỆU ĐỒNG BỘ BẰNG TRANSACTION TỰ QUẢN ---
+        EntityManager em = JpaUtil.getEntityManager();
         try {
-            enrollmentDao.save(newEnrollment);
+            em.getTransaction().begin();
+
+            // Lấy lại ClassSection VÀO TRONG kết nối hiện tại để tránh lỗi Lazy
+            ClassSection managedSection = em.find(ClassSection.class, classSectionId);
+
+            // Double-check sĩ số phòng khi có người vừa giành mất chỗ 1 giây trước
+            int latestCount = (managedSection.getCurrentEnrollment() != null) ? managedSection.getCurrentEnrollment() : 0;
+            if (latestCount >= managedSection.getMaxCapacity()) {
+                em.getTransaction().rollback();
+                return "Lớp học phần này đã đầy sĩ số!";
+            }
+
+            // A. Lưu bảng Đăng ký (Enrollment) trực tiếp bằng EntityManager
+            Enrollment newEnrollment = new Enrollment();
+            newEnrollment.setStudent(student);
+            newEnrollment.setClassSection(managedSection);
+            newEnrollment.setStatus(EnrollmentStatus.REGISTERED);
+            em.persist(newEnrollment);
+
+            // B. Cập nhật sĩ số cho lớp (Kích hoạt khóa @Version)
+            managedSection.setCurrentEnrollment(latestCount + 1);
+            em.merge(managedSection);
+
+            // C. Xác nhận lưu cả 2 xuống Database cùng lúc
+            em.getTransaction().commit();
             return "SUCCESS";
+
+        } catch (OptimisticLockException ole) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            return "Lớp học vừa có người đăng ký hoặc thông tin đã thay đổi. Vui lòng làm mới lại trang!";
         } catch (Exception e) {
-            return "Lỗi đăng ký: " + e.getMessage();
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            e.printStackTrace();
+            return "Lỗi đăng ký hệ thống: " + e.getMessage();
+        } finally {
+            em.close();
         }
     }
 }

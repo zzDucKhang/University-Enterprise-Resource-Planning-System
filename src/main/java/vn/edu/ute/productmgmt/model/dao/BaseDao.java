@@ -5,6 +5,7 @@ import jakarta.persistence.EntityTransaction;
 import vn.edu.ute.productmgmt.model.util.JpaUtil;
 import java.util.List;
 
+// Lớp trừu tượng BaseDao, giúp quản lý các thao tác cơ bản với database
 public abstract class BaseDao<T, ID> {
     protected final Class<T> entityClass;
 
