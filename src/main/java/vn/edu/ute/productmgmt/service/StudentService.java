@@ -2,7 +2,10 @@ package vn.edu.ute.productmgmt.service;
 
 import vn.edu.ute.productmgmt.model.dao.StudentDao;
 import vn.edu.ute.productmgmt.model.dto.StudentDTO;
+import vn.edu.ute.productmgmt.model.entity.Account;
 import vn.edu.ute.productmgmt.model.entity.Student;
+import vn.edu.ute.productmgmt.model.enums.UserRole;
+import vn.edu.ute.productmgmt.service.AccountService;
 import vn.edu.ute.productmgmt.model.util.ValidationUtil;
 import java.util.List;
 
@@ -64,8 +67,23 @@ public class StudentService {
         }
         // 3. Nếu là CẬP NHẬT (id != null), bỏ qua bước check trùng mã chính nó
 
+        boolean isNewStudent = (student.getId() == null);
+
         try {
             studentDao.save(student);
+
+            // Auto-generate account for new student
+            if (isNewStudent) {
+                Account newAccount = new Account();
+                newAccount.setUsername(student.getStudentCode());
+                newAccount.setPassword("123");
+                newAccount.setRole(UserRole.STUDENT);
+                newAccount.setStudent(student);
+
+                AccountService accountService = new AccountService();
+                accountService.createAccount(newAccount);
+            }
+
             return "SUCCESS";
         } catch (Exception e) {
             return "Lỗi hệ thống: " + e.getMessage();

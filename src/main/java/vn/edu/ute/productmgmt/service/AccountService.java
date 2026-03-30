@@ -9,6 +9,7 @@ import vn.edu.ute.productmgmt.model.util.SessionManager;
 public class AccountService {
     private final AccountDao accountDao = new AccountDao();
 
+    // Hàm login account, có phân quyền
     public String login(String username, String password) {
         // 1. Tìm tài khoản trong DB (Nhờ có JOIN FETCH trong DAO nên sẽ có đủ Student/Lecturer)
         Account acc = accountDao.findByUsername(username);
@@ -50,9 +51,7 @@ public class AccountService {
         return "SUCCESS";
     }
 
-    /**
-     * HÀM TẠO TÀI KHOẢN (Dành cho Admin)
-     */
+     //HÀM TẠO TÀI KHOẢN (Dành cho Admin)
     public void createAccount(Account account) {
         // LUÔN LUÔN băm mật khẩu trước khi lưu để bảo mật
         if (account.getPassword() != null && !account.getPassword().isEmpty()) {

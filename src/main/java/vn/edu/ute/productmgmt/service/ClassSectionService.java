@@ -5,21 +5,22 @@ import vn.edu.ute.productmgmt.model.dto.ClassSectionDTO;
 import vn.edu.ute.productmgmt.model.entity.ClassSection;
 import java.util.List;
 
+// Lớp học
 public class ClassSectionService {
     private final ClassSectionDao classSectionDao = new ClassSectionDao();
 
+    // Hàm lấy tất cả lớp học
     public List<ClassSectionDTO> getAllClassSectionDTOs() {
         return classSectionDao.findAllDTO();
     }
 
+    // Hàm lấy tất cả học kỳ
     public List<ClassSectionDTO> getDTOsBySemester(Long semesterId) {
         if (semesterId == null) return getAllClassSectionDTOs();
         return classSectionDao.findDTOBySemester(semesterId);
     }
 
-    /**
-     * Phục vụ Tab "Lịch dạy của tôi" cho Giảng viên
-     */
+   // Hàm lấy các lịch dạy của giảng viên
     public List<ClassSectionDTO> getClassesByLecturer(Long lecturerId) {
         if (lecturerId == null) return java.util.Collections.emptyList();
         return classSectionDao.findByLecturerId(lecturerId);
@@ -47,7 +48,6 @@ public class ClassSectionService {
     }
 
     public long countTotal() {
-        // Đã tối ưu gọi lệnh COUNT trực tiếp trong DB
         return classSectionDao.countTotalClasses();
     }
 }
