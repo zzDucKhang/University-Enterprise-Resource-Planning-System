@@ -29,6 +29,7 @@ public class ClassSectionService {
         return classSectionDao.findByLecturerId(lecturerId);
     }
 
+    // Hàm tạo lớp mới dành cho admin
     public String saveClassSection(ClassSection section) {
         if (section.getMaxCapacity() == null || section.getMaxCapacity() <= 0) {
             return "Sĩ số tối đa phải lớn hơn 0!";
@@ -46,6 +47,7 @@ public class ClassSectionService {
         }
     }
 
+    // Hàm xóa lớp dành cho admin
     public void deleteClassSection(Long id) {
         classSectionDao.deleteById(id);
     }

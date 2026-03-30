@@ -32,6 +32,18 @@ public class Student {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
     private List<Enrollment> enrollments = new ArrayList<>();
 
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private Account account;
+
+    public Account getAccount() { return account; }
+    public void setAccount(Account account) {
+        this.account = account;
+        // Thiết lập mối quan hệ 2 chiều
+        if (account != null) {
+            account.setStudent(this);
+        }
+    }
+
     public Student() {}
 
     public Student(String studentCode, String fullName, LocalDate dob, String email, Gender gender, Major major) {

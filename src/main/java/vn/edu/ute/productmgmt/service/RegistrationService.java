@@ -13,6 +13,7 @@ public class RegistrationService {
     private final EnrollmentDao enrollmentDao = new EnrollmentDao();
     private final ClassSectionDao classSectionDao = new ClassSectionDao();
 
+    // Đăng ký học phần cho student
     public String registerCourse(Student student, Long classSectionId) {
         ClassSection section = classSectionDao.findById(classSectionId);
 
@@ -23,7 +24,7 @@ public class RegistrationService {
             return "Lớp học phần này đã đầy sĩ số!";
         }
 
-        // 2. Tùy chỉnh: Kiểm tra thời gian mở đăng ký tín chỉ
+        // 2. Kiểm tra thời gian mở đăng ký tín chỉ
         if (section.getSemester().getRegistrationStartDate() != null && section.getSemester().getRegistrationEndDate() != null) {
             LocalDate today = LocalDate.now();
             if (today.isBefore(section.getSemester().getRegistrationStartDate()) || today.isAfter(section.getSemester().getRegistrationEndDate())) {
@@ -31,19 +32,19 @@ public class RegistrationService {
             }
         }
 
-        // Lấy danh sách đăng ký hiện tại của sinh viên trong HỌC KỲ NÀY
+        // Lấy danh sách học phần đăng ký hiện tại của sinh viên trong HỌC KỲ NÀY
         List<Enrollment> registrations = enrollmentDao.findAll().stream()
                 .filter(e -> e.getStudent().getId().equals(student.getId())
                         && e.getClassSection().getSemester().getId().equals(section.getSemester().getId()))
                 .toList();
 
-        // 3. Tùy chỉnh: Đăng ký trùng môn học (cùng môn khác lớp)
+        // 3.Đăng ký trùng môn học (cùng môn khác lớp)
         boolean duplicateCourse = registrations.stream().anyMatch(e -> e.getClassSection().getCourse().getId().equals(section.getCourse().getId()));
         if (duplicateCourse) {
             return "Bạn đã đăng ký một lớp khác của môn học này trong học kỳ hiện tại!";
         }
 
-        // 4. Tùy chỉnh: Môn học đã học và Passed chưa?
+        // 4.  Môn học đã học và Passed chưa?
         boolean alreadyPassed = enrollmentDao.findTranscriptByStudent(student.getId()).stream()
                 .anyMatch(e -> e.getCourseCode().equals(section.getCourse().getCourseCode())
                         && e.getStatus() == EnrollmentStatus.PASSED);

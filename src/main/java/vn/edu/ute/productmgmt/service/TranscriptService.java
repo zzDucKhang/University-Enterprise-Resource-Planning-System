@@ -6,17 +6,21 @@ import vn.edu.ute.productmgmt.model.entity.Enrollment;
 import vn.edu.ute.productmgmt.model.enums.EnrollmentStatus;
 import java.util.List;
 
+// Xử lý điểm số và Học bạ
 public class TranscriptService {
     private final EnrollmentDao enrollmentDao = new EnrollmentDao();
 
+    // Bảng điểm cá nhân của tất cả môn của 1 sinh viên
     public List<EnrollmentDTO> getStudentTranscript(Long studentId) {
         return enrollmentDao.findTranscriptByStudent(studentId);
     }
 
+    // Danh sách sinh viên của 1 lớp học
     public List<EnrollmentDTO> getEnrollmentsByClass(Long classSectionId) {
         return enrollmentDao.findByClassSection(classSectionId);
     }
 
+    // Hàm tính GPA
     public Double calculateSemesterGPA(List<EnrollmentDTO> transcript) {
         double totalPoints = 0;
         int totalCredits = 0;
@@ -30,6 +34,7 @@ public class TranscriptService {
         return totalCredits == 0 ? 0.0 : totalPoints / totalCredits;
     }
 
+    // Chuyển điểm từ hệ 10 -> hệ 4
     private double convertToScale4(Double score) {
         if (score >= 8.5) return 4.0;    // A
         if (score >= 8.0) return 3.5;    // B+
@@ -41,6 +46,7 @@ public class TranscriptService {
         return 0.0;                      // F
     }
 
+    // Hàm nhập điểm c
     public String updateEnrollmentScore(Long enrollmentId, Double score) {
         if (score < 0 || score > 10) {
             return "Điểm phải nằm trong khoảng từ 0 đến 10!";

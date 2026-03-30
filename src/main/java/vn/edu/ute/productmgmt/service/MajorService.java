@@ -7,7 +7,8 @@ import java.util.List;
 public class MajorService {
     private final MajorDao majorDao = new MajorDao();
 
+    // Lấy tất cả ngành học
     public List<Major> getAllMajors() {
-        return majorDao.findAll(); // Chỉ cần hàm này là đủ
+        return majorDao.findAll();
     }
 }

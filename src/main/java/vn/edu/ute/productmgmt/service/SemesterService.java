@@ -8,5 +8,4 @@ import java.util.List;
 public class SemesterService {
     private final SemesterDao semesterDao = new SemesterDao();
     public List<Semester> getAll() { return semesterDao.findAll(); }
-    public void save(Semester s) { semesterDao.save(s); }
 }
