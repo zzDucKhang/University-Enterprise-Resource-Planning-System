@@ -46,7 +46,7 @@ public class RegistrationController {
                     cs.getClassCode(),       // Cột 1: Mã lớp
                     cs.getCourseName(),      // Cột 2: Tên môn học
                     cs.getCredits(),         // Cột 3: Số tín chỉ
-                    cs.getLecturerName(),    // Cột 4: Giảng viên
+                    cs.getLecturerDisplayName(), // Cột 4: Giảng viên
                     cs.getScheduleDisplay(), // Cột 5: Lịch học (Thứ, Tiết)
                     cs.getCapacityDisplay()  // Cột 6: Sĩ số (Ví dụ: 45/50)
             });

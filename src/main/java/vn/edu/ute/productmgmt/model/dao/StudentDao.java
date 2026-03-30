@@ -47,9 +47,20 @@ public class StudentDao extends BaseDao<Student, Long> {
     public List<StudentDTO> searchByNameOrCode(String keyword) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            String jpql = "SELECT new vn.edu.ute.productmgmt.model.dto.StudentDTO(...) " +
-                    "FROM Student s WHERE s.fullName LIKE :key OR s.studentCode LIKE :key";
+            String jpql = "SELECT new vn.edu.ute.productmgmt.model.dto.StudentDTO(" +
+                    "s.id, s.studentCode, s.fullName, s.dob, s.email, s.gender, " +
+                    "m.name, f.name, " +
+                    "AVG(en.score), SUM(c.credits)) " +
+                    "FROM Student s " +
+                    "JOIN s.major m " +
+                    "JOIN m.faculty f " +
+                    "LEFT JOIN s.enrollments en ON en.status = :status " +
+                    "LEFT JOIN en.classSection cs " +
+                    "LEFT JOIN cs.course c " +
+                    "WHERE (s.fullName LIKE :key OR s.studentCode LIKE :key) " +
+                    "GROUP BY s.id, s.studentCode, s.fullName, s.dob, s.email, s.gender, m.name, f.name";
             return em.createQuery(jpql, StudentDTO.class)
+                    .setParameter("status", EnrollmentStatus.PASSED)
                     .setParameter("key", "%" + keyword + "%")
                     .getResultList();
         } finally { em.close(); }

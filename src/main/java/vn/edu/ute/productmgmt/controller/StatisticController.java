@@ -1,8 +1,13 @@
 package vn.edu.ute.productmgmt.controller;
 
+import vn.edu.ute.productmgmt.model.dto.StudentDTO;
 import vn.edu.ute.productmgmt.service.StudentService;
 import vn.edu.ute.productmgmt.service.ClassSectionService;
 import vn.edu.ute.productmgmt.view.StatisticPanel;
+
+import javax.swing.table.DefaultTableModel;
+import java.util.Comparator;
+import java.util.List;
 
 public class StatisticController {
     private StatisticPanel view;
@@ -16,9 +21,34 @@ public class StatisticController {
         refreshStats();
     }
 
-    // Đổi thành PUBLIC để MainController gọi được
     public void refreshStats() {
         view.getLblTotalStudents().setText("Tổng số: " + studentService.countTotal());
         view.getLblTotalGroups().setText("Đang mở: " + classService.countTotal());
+        loadTopStudentsByGpa();
+    }
+
+    private void loadTopStudentsByGpa() {
+        List<StudentDTO> students = studentService.getAllStudentDTOs();
+        students.sort(
+                Comparator.comparing(
+                                (StudentDTO s) -> s.getGpa() != null ? s.getGpa() : 0.0
+                        )
+                        .reversed()
+                        .thenComparing(StudentDTO::getStudentCode)
+        );
+
+        DefaultTableModel model = view.getTableModel();
+        model.setRowCount(0);
+
+        int limit = Math.min(10, students.size());
+        for (int i = 0; i < limit; i++) {
+            StudentDTO s = students.get(i);
+            model.addRow(new Object[]{
+                    i + 1,
+                    s.getStudentCode(),
+                    s.getFullName(),
+                    s.getGpaFormatted()
+            });
+        }
     }
 }

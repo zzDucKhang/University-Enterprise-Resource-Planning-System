@@ -8,6 +8,7 @@ public class ClassSectionDTO {
     private String courseName;
     private Integer credits;
     private String lecturerName;
+    private String lecturerCode;
     private String semesterName;
     private StudyDay dayOfWeek;
     private Integer startPeriod;
@@ -19,7 +20,7 @@ public class ClassSectionDTO {
     public ClassSectionDTO() {}
 
     public ClassSectionDTO(Long id, String classCode, String courseName, Integer credits,
-                           String lecturerName, String semesterName, StudyDay dayOfWeek,
+                           String lecturerName, String lecturerCode, String semesterName, StudyDay dayOfWeek,
                            Integer startPeriod, Integer endPeriod, String room,
                            Long currentEnrollment, Integer maxCapacity) {
         this.id = id;
@@ -27,6 +28,7 @@ public class ClassSectionDTO {
         this.courseName = courseName;
         this.credits = credits;
         this.lecturerName = lecturerName;
+        this.lecturerCode = lecturerCode;
         this.semesterName = semesterName;
         this.dayOfWeek = dayOfWeek;
         this.startPeriod = startPeriod;
@@ -50,6 +52,25 @@ public class ClassSectionDTO {
 
     public String getLecturerName() { return lecturerName; }
     public void setLecturerName(String lecturerName) { this.lecturerName = lecturerName; }
+
+    public String getLecturerCode() { return lecturerCode; }
+    public void setLecturerCode(String lecturerCode) { this.lecturerCode = lecturerCode; }
+
+    public String getLecturerDisplayName() {
+        if (lecturerName != null) {
+            String t = lecturerName.trim();
+            if (!t.isEmpty()) {
+                return t;
+            }
+        }
+        if (lecturerCode != null) {
+            String c = lecturerCode.trim();
+            if (!c.isEmpty()) {
+                return c;
+            }
+        }
+        return "Chưa phân công";
+    }
 
     public String getSemesterName() { return semesterName; }
     public void setSemesterName(String semesterName) { this.semesterName = semesterName; }

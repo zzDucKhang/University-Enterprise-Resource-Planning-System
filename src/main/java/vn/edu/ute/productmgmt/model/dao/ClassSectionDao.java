@@ -10,7 +10,7 @@ public class ClassSectionDao extends BaseDao<ClassSection, Long> {
     public ClassSectionDao() { super(ClassSection.class); }
 
     private static final String DTO_SELECT = "SELECT new vn.edu.ute.productmgmt.model.dto.ClassSectionDTO(" +
-            "cs.id, cs.classCode, c.title, c.credits, l.fullName, sem.semesterName, " +
+            "cs.id, cs.classCode, c.title, c.credits, l.fullName, l.lecturerCode, sem.semesterName, " +
             "cs.dayOfWeek, cs.startPeriod, cs.endPeriod, cs.room, " +
             "(SELECT COUNT(e) FROM Enrollment e WHERE e.classSection.id = cs.id), " +
             "cs.maxCapacity) " +

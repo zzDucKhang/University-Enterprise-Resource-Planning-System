@@ -16,9 +16,17 @@ public class RegistrationPanel extends JPanel {
         lblHeader.setFont(new Font("Arial", Font.BOLD, 16));
         add(lblHeader, BorderLayout.NORTH);
 
-        String[] cols = {"Mã lớp", "Môn học", "Tín chỉ", "Giảng viên", "Lịch học", "Sĩ số"};
-        tableModel = new DefaultTableModel(cols, 0);
+        String[] cols = {"ID", "Mã lớp", "Môn học", "Tín chỉ", "Giảng viên", "Lịch học", "Sĩ số"};
+        tableModel = new DefaultTableModel(cols, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tableClasses = new JTable(tableModel);
+        tableClasses.getColumnModel().getColumn(0).setMinWidth(0);
+        tableClasses.getColumnModel().getColumn(0).setMaxWidth(0);
+        tableClasses.getColumnModel().getColumn(0).setPreferredWidth(0);
         add(new JScrollPane(tableClasses), BorderLayout.CENTER);
 
         JPanel pnlSouth = new JPanel();

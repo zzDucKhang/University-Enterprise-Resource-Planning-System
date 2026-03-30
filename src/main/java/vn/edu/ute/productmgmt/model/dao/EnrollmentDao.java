@@ -9,6 +9,22 @@ import java.util.List;
 public class EnrollmentDao extends BaseDao<Enrollment, Long> {
     public EnrollmentDao() { super(Enrollment.class); }
 
+    public boolean existsByStudentAndClassSection(Long studentId, Long classSectionId) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            Long count = em.createQuery(
+                            "SELECT COUNT(e) FROM Enrollment e "
+                                    + "WHERE e.student.id = :sid AND e.classSection.id = :cid",
+                            Long.class)
+                    .setParameter("sid", studentId)
+                    .setParameter("cid", classSectionId)
+                    .getSingleResult();
+            return count != null && count > 0;
+        } finally {
+            em.close();
+        }
+    }
+
     public List<EnrollmentDTO> findTranscriptByStudent(Long studentId) {
         EntityManager em = JpaUtil.getEntityManager();
         try {

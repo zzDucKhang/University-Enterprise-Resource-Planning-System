@@ -14,18 +14,28 @@ public class RegistrationService {
     private final ClassSectionDao classSectionDao = new ClassSectionDao();
 
     public String registerCourse(Student student, Long classSectionId) {
+        if (student == null || classSectionId == null) {
+            return "Dữ liệu đăng ký không hợp lệ!";
+        }
+
         ClassSection section = classSectionDao.findById(classSectionId);
+        if (section == null) {
+            return "Không tìm thấy lớp học phần!";
+        }
 
-        // 1. Kiểm tra sĩ số lớp
+        if (enrollmentDao.existsByStudentAndClassSection(student.getId(), classSectionId)) {
+            return "Bạn đã đăng ký lớp học phần này rồi!";
+        }
+
         long currentEnrollment = classSectionDao.countEnrollmentByClassId(classSectionId);
-
-        if (currentEnrollment >= section.getMaxCapacity()) {
+        Integer cap = section.getMaxCapacity();
+        if (cap != null && currentEnrollment >= cap) {
             return "Lớp học phần này đã đầy sĩ số!";
         }
 
-        // 2. Kiểm tra môn tiên quyết
+        var transcript = enrollmentDao.findTranscriptByStudent(student.getId());
         for (Course prerequisite : section.getCourse().getPrerequisites()) {
-            boolean passed = enrollmentDao.findTranscriptByStudent(student.getId()).stream()
+            boolean passed = transcript.stream()
                     .anyMatch(e -> e.getCourseCode().equals(prerequisite.getCourseCode())
                             && e.getStatus() == EnrollmentStatus.PASSED);
             if (!passed) {
@@ -33,7 +43,6 @@ public class RegistrationService {
             }
         }
 
-        // 3. Kiểm tra trùng lịch học
         List<Enrollment> registrations = enrollmentDao.findAll().stream()
                 .filter(e -> e.getStudent().getId().equals(student.getId())
                         && e.getClassSection().getSemester().getId().equals(section.getSemester().getId()))
@@ -42,14 +51,17 @@ public class RegistrationService {
         for (Enrollment reg : registrations) {
             ClassSection s = reg.getClassSection();
             if (s.getDayOfWeek() == section.getDayOfWeek()) {
-                // Công thức kiểm tra giao thoa khoảng tiết học
-                if (Math.max(s.getStartPeriod(), section.getStartPeriod()) <= Math.min(s.getEndPeriod(), section.getEndPeriod())) {
+                Integer sp = s.getStartPeriod();
+                Integer ep = s.getEndPeriod();
+                Integer a = section.getStartPeriod();
+                Integer b = section.getEndPeriod();
+                if (sp != null && ep != null && a != null && b != null
+                        && Math.max(sp, a) <= Math.min(ep, b)) {
                     return "Bị trùng lịch với môn: " + s.getCourse().getTitle();
                 }
             }
         }
 
-        // 4. Nếu vượt qua tất cả, tiến hành lưu
         Enrollment newEnrollment = new Enrollment();
         newEnrollment.setStudent(student);
         newEnrollment.setClassSection(section);
