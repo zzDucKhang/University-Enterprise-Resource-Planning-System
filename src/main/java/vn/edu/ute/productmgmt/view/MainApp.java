@@ -10,6 +10,7 @@ public class MainApp extends JFrame {
     private RegistrationPanel registrationPanel;
     private StatisticPanel statisticPanel;
     private LecturerClassPanel lecturerClassPanel;
+    private ClassAdminPanel classAdminPanel;
     private GradePanel gradePanel;
     private StudentTranscriptPanel studentTranscriptPanel;
     private JMenuItem itemLogout;
@@ -31,11 +32,11 @@ public class MainApp extends JFrame {
                 studentPanel = new StudentPanel();
                 registrationPanel = new RegistrationPanel();
                 statisticPanel = new StatisticPanel();
-                lecturerClassPanel = new LecturerClassPanel();
+                classAdminPanel = new ClassAdminPanel();
                 gradePanel = new GradePanel();
 
                 tabbedPane.addTab("Quản lý Sinh viên", studentPanel);
-                tabbedPane.addTab("Quản lý Lớp học", lecturerClassPanel);
+                tabbedPane.addTab("Quản lý Lớp học", classAdminPanel);
                 tabbedPane.addTab("Đăng ký Học phần", registrationPanel);
                 tabbedPane.addTab("Chấm điểm Sinh viên", gradePanel);
                 tabbedPane.addTab("Thống kê & Báo cáo", statisticPanel);
@@ -77,6 +78,7 @@ public class MainApp extends JFrame {
     public RegistrationPanel getRegistrationPanel() { return registrationPanel; }
     public StatisticPanel getStatisticPanel() { return statisticPanel; }
     public LecturerClassPanel getLecturerClassPanel() { return lecturerClassPanel; }
+    public ClassAdminPanel getClassAdminPanel() { return classAdminPanel; }
     public GradePanel getGradePanel() { return gradePanel; }
     public StudentTranscriptPanel getStudentTranscriptPanel() { return studentTranscriptPanel; }
     public JMenuItem getItemLogout() { return itemLogout; }

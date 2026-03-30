@@ -11,6 +11,7 @@ public class MainController {
     private RegistrationController registrationController;
     private StatisticController statisticController;
     private LecturerClassController lecturerClassController;
+    private ClassAdminController classAdminController;
     private GradeController gradeController;
     private StudentTranscriptController studentTranscriptController;
 
@@ -30,6 +31,9 @@ public class MainController {
         if (mainApp.getLecturerClassPanel() != null) {
             this.lecturerClassController = new LecturerClassController(mainApp.getLecturerClassPanel());
         }
+        if (mainApp.getClassAdminPanel() != null) {
+            this.classAdminController = new ClassAdminController(mainApp.getClassAdminPanel());
+        }
         if (mainApp.getGradePanel() != null) {
             this.gradeController = new GradeController(mainApp.getGradePanel());
         }
@@ -46,6 +50,7 @@ public class MainController {
         if (registrationController != null) registrationController.loadAvailableClasses();
         if (statisticController != null) statisticController.refreshStats();
         if (lecturerClassController != null) lecturerClassController.loadLecturerClasses();
+        if (classAdminController != null) classAdminController.loadData();
         if (gradeController != null) gradeController.loadClasses();
         if (studentTranscriptController != null) studentTranscriptController.loadStudentTranscript();
         System.out.println(">>> Dữ liệu toàn hệ thống đã được đồng bộ.");

@@ -14,10 +14,13 @@ public class ClassSectionService {
         return classSectionDao.findAllDTO();
     }
 
-    // Hàm lấy tất cả học kỳ
     public List<ClassSectionDTO> getDTOsBySemester(Long semesterId) {
         if (semesterId == null) return getAllClassSectionDTOs();
         return classSectionDao.findDTOBySemester(semesterId);
+    }
+
+    public ClassSection findById(Long id) {
+        return classSectionDao.findById(id);
     }
 
    // Hàm lấy các lịch dạy của giảng viên
