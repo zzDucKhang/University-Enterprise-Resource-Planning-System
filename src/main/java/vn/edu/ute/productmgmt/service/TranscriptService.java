@@ -54,14 +54,15 @@ public class TranscriptService {
         try {
             Enrollment enrollment = enrollmentDao.findById(enrollmentId);
             if (enrollment == null) return "Không tìm thấy nội dung đăng ký này!";
-            
+
             enrollment.setScore(score);
             if (score >= 5.0) {
                 enrollment.setStatus(EnrollmentStatus.PASSED);
             } else {
                 enrollment.setStatus(EnrollmentStatus.FAILED);
             }
-            enrollmentDao.save(enrollment);
+            enrollmentDao.save(enrollment); // Chỉ cần lưu điểm ở đây là đủ
+
             return "SUCCESS";
         } catch (Exception e) {
             return "Lỗi cập nhật điểm: " + e.getMessage();
